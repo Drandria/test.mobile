@@ -9,6 +9,7 @@ export default function LoginScreen() {
     const navigation = useNavigation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
 
     const handleLogin = async () => {
         const success = await login(email, password);
@@ -18,6 +19,7 @@ export default function LoginScreen() {
                 routes: [{ name: "ProductList" as never }],
             });
         } else {
+            setError("Identifiants incorrects. Veuillez réessayer.");
             console.error("Login failed");
         }
     }
@@ -40,6 +42,7 @@ export default function LoginScreen() {
                 value={password}
                 onChangeText={setPassword}
             />
+            {error && <Text style={{ color: "red", marginBottom: 10 }}>{error}</Text>}
             <Button title="Se connecter" onPress={ handleLogin } />
             <Text style={styles.link} onPress={() => { navigation.navigate("Register" as never) }}>
                 Pas de compte ? S'inscrire
