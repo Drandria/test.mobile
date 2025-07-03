@@ -13,7 +13,7 @@ export default function AuthStack() {
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="ProductList" component={ProductListScreen} />
+        <Stack.Screen name="ProductList" component={ProductListScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
