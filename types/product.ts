@@ -9,3 +9,9 @@ export type Product = {
     image: string | null;
     isActive: boolean;
 }
+
+export type ProductFilter = {
+    search?: string;
+    category?: string;
+    isActive?: boolean;
+}

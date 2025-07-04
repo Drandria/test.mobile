@@ -14,7 +14,7 @@ export function ScreenTitle({ title }: Props) {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 24,
+        paddingHorizontal: 16,
     },
     title: {
         fontSize: 24,
