@@ -14,10 +14,7 @@ export default function LoginScreen() {
     const handleLogin = async () => {
         const success = await login(email, password);
         if (success) {
-            navigation.reset({
-                index: 0,
-                routes: [{ name: "ProductList" as never }],
-            });
+            return
         } else {
             setError("Identifiants incorrects. Veuillez réessayer.");
             console.error("Login failed");

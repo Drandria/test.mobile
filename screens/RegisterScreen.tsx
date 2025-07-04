@@ -23,10 +23,7 @@ export default function RegisterScreen() {
 
         const success = await register(email, name, password);
         if (success) {
-            navigation.reset({
-                index: 0,
-                routes: [{ name: "ProductList" as never }],
-            });
+            return
         } else {
             console.error("Registration failed");
         }

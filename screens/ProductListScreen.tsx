@@ -1,24 +1,39 @@
-import { View, Text, Button } from "react-native";
-import { useAuth } from "@/context/AuthContext";
-import { useNavigation } from "@react-navigation/native";
-
+import { View, StyleSheet, FlatList, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ScreenTitle } from "@/components/ScreenTitle";
+import { getProducts } from "@/services/product.service";
+import { ProductCard } from "@/components/ProductCard";
 
 export default function ProductListScreen() {
-    const { logout } = useAuth();
-    const navigation = useNavigation();
+	const products = getProducts();
 
-    const handleLogout = () => {
-        logout();
-        navigation.reset({
-            index: 0,
-            routes: [{ name: "Login" as never }],
-        });
-    }
-
-  return (
-    <View>
-      <Text>Product List Screen</Text>
-        <Button title="Logout" onPress={ handleLogout } />
-    </View>
-  );
+	return (
+		<SafeAreaView style={styles.container} edges={['top']}>
+			<ScreenTitle title="Product List" />
+			<View style={styles.body}>
+				<FlatList
+					data={products}
+					keyExtractor={(item) => item.id.toString()}
+					renderItem={({ item }) => (
+						<ProductCard product={item} />
+					)}
+					contentContainerStyle={{ gap: 16 }}
+				/>
+			</View>
+		</SafeAreaView>
+	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: "red",
+		padding: 4,
+	},
+	body: {
+		flex: 1,
+		backgroundColor: "#f8f8f8",
+		borderRadius: 8,
+		padding: 16,
+	}
+});

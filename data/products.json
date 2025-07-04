@@ -1,0 +1,112 @@
+[
+    {
+        "id": "1",
+        "name": "iPhone 15",
+        "description": "Dernier modèle Apple",
+        "price": 999.99,
+        "stock": 25,
+        "category": "Électronique",
+        "vendeurs": "TechStore",
+        "image": "https://www.pinterest.com/pin/30751209950615752/",
+        "isActive": true
+    },
+    {
+        "id": "2",
+        "name": "Samsung Galaxy S23",
+        "description": "Smartphone haut de gamme",
+        "price": 899.99,
+        "stock": 30,
+        "category": "Électronique",
+        "vendeurs": "MobileWorld",
+        "image": "https://example.com/galaxyS23.jpg",
+        "isActive": true
+    },
+    {
+        "id": "3",
+        "name": "MacBook Pro 16\"",
+        "description": "Ordinateur portable puissant",
+        "price": 2499.99,
+        "stock": 15,
+        "category": "Informatique",
+        "vendeurs": "AppleStore",
+        "image": "https://example.com/macbookpro.jpg",
+        "isActive": true
+    },
+    {
+        "id": "4",
+        "name": "Sony WH-1000XM5",
+        "description": "Casque audio sans fil avec réduction de bruit",
+        "price": 349.99,
+        "stock": 50,
+        "category": "Audio",
+        "vendeurs": "AudioExpert",
+        "image": "https://example.com/sonywh1000xm5.jpg",
+        "isActive": true
+    },
+    {
+        "id": "5",
+        "name": "Dell XPS 13",
+        "description": "Ultrabook élégant et performant",
+        "price": 1399.99,
+        "stock": 20,
+        "category": "Informatique",
+        "vendeurs": null,
+        "image": null,
+        "isActive": false
+    },
+    {
+        "id": "6",
+        "name": "Google Pixel 7",
+        "description": "Smartphone avec une excellente caméra",
+        "price": 599.99,
+        "stock": 40,
+        "category": "Électronique",
+        "vendeurs": "TechHub",
+        "image": "https://example.com/pixel7.jpg",
+        "isActive": true
+    },
+    {
+        "id": "7",
+        "name": "Bose QuietComfort 45",
+        "description": "Casque audio premium avec réduction de bruit",
+        "price": 379.99,
+        "stock": 10,
+        "category": "Audio",
+        "vendeurs": null,
+        "image": null,
+        "isActive": false
+    },
+    {
+        "id": "8",
+        "name": "Apple Watch Series 9",
+        "description": "Montre connectée avec suivi de la santé",
+        "price": 399.99,
+        "stock": 35,
+        "category": "Accessoires",
+        "vendeurs": "AppleStore",
+        "image": "https://example.com/applewatch9.jpg",
+        "isActive": true
+    },
+    {
+        "id": "9",
+        "name": "Samsung Galaxy Tab S8",
+        "description": "Tablette Android haut de gamme",
+        "price": 699.99,
+        "stock": 22,
+        "category": "Tablettes",
+        "vendeurs": null,
+        "image": null,
+        "isActive": false
+    },
+    {
+        "id": "10",
+        "name": "Logitech MX Master 3S",
+        "description": "Souris sans fil ergonomique pour professionnels",
+        "price": 99.99,
+        "stock": 60,
+        "category": "Informatique",
+        "vendeurs": null,
+        "image": null,
+        "isActive": false
+    }
+]
