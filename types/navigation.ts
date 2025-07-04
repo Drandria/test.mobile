@@ -1,5 +1,11 @@
-export type RootStackParamList = {
+export type AuthStackParamList = {
   Login: undefined;
   Register: undefined;
-  ProductList: undefined;
 };
+
+export type AppTabParamList = {
+  List: undefined;
+  Detail: { id : string };
+  Form: { id?: string };
+  Profile: undefined;
+}

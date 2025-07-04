@@ -23,3 +23,14 @@ export function getProducts(filter?: ProductFilter): Product[] {
         return matchActive && matchSearch && matchCategory;
     });
 }
+
+export function getProductById(id: string): Product | undefined {
+    return products.find((product) => product.id === id);
+}
+
+export function deleteProduct(id: string): void {
+    const index = products.findIndex((product) => product.id === id);
+    if (index !== -1) {
+        products.splice(index, 1);
+    }
+}

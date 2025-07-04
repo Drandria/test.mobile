@@ -4,7 +4,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ScreenTitle } from "@/components/ScreenTitle";
 import { getProducts } from "@/services/product.service";
 import { ProductCard } from "@/components/ProductCard";
-import { Product } from "@/types/product";
 import { SearchBar } from "@/components/SearchBar";
 
 export default function ProductListScreen() {
@@ -38,7 +37,7 @@ export default function ProductListScreen() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "red",
+		backgroundColor: "blue",
 		padding: 4,
 
 		gap: 16,

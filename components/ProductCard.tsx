@@ -1,11 +1,18 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { Product } from "@/types/product";
+import { AppTabParamList } from "@/types/navigation";
 
 export function ProductCard({ product }: { product: Product }) {
+    const navigation = useNavigation<NavigationProp<AppTabParamList>>();
+
     return (
-        <TouchableOpacity style={styles.container}>
+        <TouchableOpacity 
+            style={styles.container}
+            onPress={() => navigation.navigate("Detail", { id: product.id })}
+        >
             <Image
-                source={{ uri: "https://i.pinimg.com/736x/91/8c/ac/918cace5327a6165fd14e4886001e0a3.jpg" }}
+                source={{ uri: product.image || "https://i.pinimg.com/736x/91/8c/ac/918cace5327a6165fd14e4886001e0a3.jpg" }}
                 style={styles.image}
                 resizeMode="cover"
             />
