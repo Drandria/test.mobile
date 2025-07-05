@@ -31,7 +31,12 @@ export default function ProductListScreen() {
 						<ProductCard product={item} />
 					)}
 					contentContainerStyle={{ gap: 16 }}
-					ListEmptyComponent={loading ? <Text>Loading...</Text> : <Text>No products found.</Text>}
+
+					ListEmptyComponent={
+						<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+							{ loading ? <Text>Loading...</Text> : <Text>No products found.</Text> }
+						</View>
+					}
 				/>
 			</View>
 		</SafeAreaView>
@@ -56,5 +61,5 @@ const styles = StyleSheet.create({
 		width: "100%",
 		flexDirection: "row",
 		paddingHorizontal: 16,
-	}
+	},
 });

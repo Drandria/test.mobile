@@ -36,6 +36,8 @@ export function ProductCard({ product }: { product: Product }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        maxWidth: 400,
+        maxHeight: 520,
         backgroundColor: "#fff",
         borderRadius: 8,
         elevation: 2,
