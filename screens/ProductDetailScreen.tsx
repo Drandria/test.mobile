@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
 		width: "100%",
 		height: 400,
 		marginBottom: 16,
+		backgroundColor: "#e0e0e0",
 	},
 	info: {
 		paddingHorizontal: 32,
@@ -118,5 +119,5 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		color: "#333",
 		marginBottom: 4,
-	}
+	},
 });

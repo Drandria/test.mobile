@@ -5,8 +5,9 @@ import ProfileScreen from '@/screens/ProfileScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { useColors } from '@/hooks/useColors';
 import { ProductProvider } from '@/context/ProductContext';
+import { TabParamList } from '@/types/navigation';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<TabParamList>();
 
 // Define application tabs navigation
 

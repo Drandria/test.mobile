@@ -9,3 +9,9 @@ export type AppTabParamList = {
   Form: { id?: string };
   Profile: undefined;
 }
+
+export type TabParamList = {
+  Produit: undefined;
+  Add: undefined;
+  Profile: undefined;
+}

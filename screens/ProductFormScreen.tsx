@@ -1,17 +1,29 @@
-import { View, Text, StyleSheet, TextInput, Button, Alert } from 'react-native';
+import { StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, useNavigation, NavigationProp, RouteProp } from '@react-navigation/native';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { Product } from '@/types/product';
-import { getProductById, updateProduct, addProduct, deleteProduct } from '@/services/product.service';
-import { AppTabParamList } from '@/types/navigation';
+import { getProductById } from '@/services/product.service';
+import { AppTabParamList, TabParamList } from '@/types/navigation';
+import { ScreenTitle } from '@/components/ScreenTitle';
+import { useColors } from '@/hooks/useColors';
+import Input from '@/components/Input';
+import { useProducts } from '@/context/ProductContext';
+import Button from '@/components/Button';
+import ImageInput from '@/components/ImageInput';
+import { validateProductForm } from '@/utils/validation';
+import { ProductError } from '@/types/validationType';
 
 
 export default function ProductFormScreen() {
     const route = useRoute<RouteProp<AppTabParamList,"List">>();
     const navigation = useNavigation<NavigationProp<AppTabParamList,"List">>();
+    const navigationTab = useNavigation<NavigationProp<TabParamList,"Produit">>();
     const params = route.params as { id?: string } | undefined;
     const id: string | undefined = params?.id;
+    const colors = useColors();
+    const { addProduct, updateProduct } = useProducts();
+    const [error,setError] = useState<ProductError>({});
 
     const emptyProduct: Product = {
         id: '',
@@ -26,6 +38,8 @@ export default function ProductFormScreen() {
     };
 
     const [product, setProduct] = useState<Product>(emptyProduct);
+    const [priceText, setPriceText] = useState<string>(product.price.toString());
+    const [stockText, setStockText] = useState<string>(product.stock.toString());
 
     useEffect(() => {
         if (id) {
@@ -36,115 +50,113 @@ export default function ProductFormScreen() {
     }, [id]);
 
     const handleSave = () => {
-        if (id) {
-            updateProduct(product);
-            Alert.alert("Succès", "Produit mis à jour !");
-        } else {
-            addProduct(product);
-            Alert.alert("Succès", "Produit ajouté !");
-        }
-        navigation.reset({
-            index: 0,
-            routes: [{ name: 'List', params: { refresh: true } }],
-        });
-    };
+        const price = parseFloat(priceText);
+        const stock = parseInt(stockText);
 
-    const handleDelete = () => {
-        Alert.alert(
-            "Confirmation",
-            "Supprimer ce produit ?",
-            [
-                { text: "Annuler", style: "cancel" },
-                {
-                    text: "Supprimer",
-                    style: "destructive",
-                    onPress: () => {
-                        if (id) {
-                            deleteProduct(id);
-                            Alert.alert("Supprimé", "Produit supprimé.");
-                            navigation.reset({
-                                index: 0,
-                                routes: [{ name: 'List' }],
-                            });
-                        }
-                    }
-                }
-            ]
+        const validationError = validateProductForm(
+            product.name,
+            product.description,
+            priceText,
+            stockText,
+            product.category,
+            product.image,
+            product.vendeurs
         );
+        setError(validationError);
+        if (Object.keys(validationError).length > 0) return;
+
+        const updatedProduct = { ...product, price, stock };
+        if (id) {
+            updateProduct({ ...updatedProduct, id });
+            navigation.goBack();
+        } else {
+            addProduct(updatedProduct);
+            navigationTab.navigate("Produit");
+        }
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }} edges={['top']}>
-            <View style={styles.container}>
-                <Text style={styles.title}>{id ? 'Modifier le produit' : 'Ajouter un nouveau produit'}</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Nom du produit"
-                    value={product.name}
-                    onChangeText={(text) => setProduct({ ...product, name: text })}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Description"
-                    value={product.description}
-                    onChangeText={(text) => setProduct({ ...product, description: text })}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Prix"
-                    value={product.price?.toString()}
-                    keyboardType="numeric"
-                    onChangeText={(text) => setProduct({ ...product, price: parseFloat(text) || 0 })}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Catégorie"
-                    value={product.category}
-                    onChangeText={(text) => setProduct({ ...product, category: text })}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Vendeur"
-                    value={product.vendeurs ?? ''}
-                    onChangeText={(text) => setProduct({ ...product, vendeurs: text })}
-                />
-
-                <Button
-                    title={id ? "Mettre à jour le produit" : "Ajouter le produit"}
-                    onPress={handleSave}
-                />
-
-                {id && (
-                    <View style={{ marginTop: 12 }}>
-                        <Button
-                            title="Supprimer le produit"
-                            color="red"
-                            onPress={handleDelete}
-                        />
-                    </View>
-                )}
-            </View>
+        <SafeAreaView style={[styles.container, { backgroundColor: colors.primary }]} edges={['top']}>
+            <ScreenTitle title={ id ? "Modifier Produit" : "Ajouter Produit" } />
+            <KeyboardAvoidingView style={[styles.body, { backgroundColor: colors.background }]} behavior="padding">
+                <ScrollView>
+                    <ImageInput
+                        image={product.image}
+                        onChange={(image: string) => setProduct({ ...product, image })}
+                        errorText={error.image}
+                    />
+                    <Input
+                        label="Nom"
+                        value={product.name}
+                        onChangeText={(text: string) => setProduct({ ...product, name: text })}
+                        errorText={error.name}
+                        error={!!error.name}
+                    />
+                    <Input
+                        label="Description"
+                        value={product.description}
+                        onChangeText={(text: string) => setProduct({ ...product, description: text })}
+                        multiline
+                        numberOfLines={4}
+                        errorText={error.description}
+                        error={!!error.description}
+                    />
+                    <Input
+                        label="Prix"
+                        value={priceText}
+                        onChangeText={setPriceText}
+                        keyboardType="numeric"
+                        errorText={error.price}
+                        error={!!error.price}
+                    />
+                    <Input
+                        label="Catégorie"
+                        value={product.category}
+                        onChangeText={(text: string) => setProduct({ ...product, category: text })}
+                        errorText={error.category}
+                        error={!!error.category}
+                    />
+                    <Input
+                        label="Stock"
+                        value={stockText}
+                        keyboardType="numeric"
+                        onChangeText={setStockText}
+                        errorText={error.stock}
+                        error={!!error.stock}
+                    />
+                    <Input
+                        label="Vendeurs"
+                        value={product.vendeurs}
+                        onChangeText={(text: string) => setProduct({ ...product, vendeurs: text })}
+                        errorText={error.vendeurs}
+                        error={!!error.vendeurs}
+                    />
+                    <Button mode="contained" onPress={handleSave}>
+                        {id ? "Modifier" : "Ajouter"}
+                    </Button>
+                </ScrollView> 
+            </KeyboardAvoidingView>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 16,
-        backgroundColor: '#f8f8f8',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 16,
-    },
-    input: {
-        height: 40,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 4,
-        paddingHorizontal: 8,
-        marginBottom: 12,
-    },
+	container: {
+		flex: 1,
+		backgroundColor: "blue",
+		padding: 4,
+
+		gap: 16,
+	},
+	body: {
+		flex: 1,
+		backgroundColor: "#f8f8f8",
+		borderRadius: 8,
+		padding: 16,
+	},
+	filter: {
+		width: "100%",
+		flexDirection: "row",
+		paddingHorizontal: 16,
+	},
 });

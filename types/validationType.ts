@@ -10,3 +10,14 @@ export type LoginError = {
     password?: string;
     log?: string;
 }
+
+export type ProductError = {
+    name?: string;
+    description?: string;
+    price?: string;
+    stock?: string;
+    category?: string;
+    image?: string;
+    vendeurs?: string;
+    product?: string;
+}
