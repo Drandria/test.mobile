@@ -1,4 +1,4 @@
-import { RegisterError, LoginError, ProductError } from "@/types/validationType";
+import { RegisterError, LoginError, ProductError, ProfileError } from "@/types/validationType";
 
 export const validateRegister = (
     email: string,
@@ -90,3 +90,22 @@ export const validateProductForm = (
 
     return errors;
 };
+
+export const validateProfileForm = (
+    name: string,
+    email: string
+): { name?: string; email?: string } => {
+    const errors: ProfileError = {};
+
+    if (!name) {
+        errors.name = "Le nom est requis";
+    }
+
+    if (!email) {
+        errors.email = "L'email est requis";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+        errors.email = "L'email n'est pas valide";
+    }
+
+    return errors;
+}

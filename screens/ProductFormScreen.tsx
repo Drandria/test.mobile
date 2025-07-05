@@ -68,7 +68,12 @@ export default function ProductFormScreen() {
         const updatedProduct = { ...product, price, stock };
         if (id) {
             updateProduct({ ...updatedProduct, id });
-            navigation.goBack();
+            navigation.reset(
+                {
+                    index: 0,
+                    routes: [{ name: "List" }],
+                }
+            );
         } else {
             addProduct(updatedProduct);
             navigationTab.navigate("Produit");
@@ -153,10 +158,5 @@ const styles = StyleSheet.create({
 		backgroundColor: "#f8f8f8",
 		borderRadius: 8,
 		padding: 16,
-	},
-	filter: {
-		width: "100%",
-		flexDirection: "row",
-		paddingHorizontal: 16,
 	},
 });

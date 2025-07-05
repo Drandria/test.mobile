@@ -3,6 +3,7 @@ export type User = {
     email: string;
     name: string;
     password?: string;
+    isMock?: boolean;
 };
 
 export type AuthContextType = {

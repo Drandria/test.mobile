@@ -21,3 +21,8 @@ export type ProductError = {
     vendeurs?: string;
     product?: string;
 }
+
+export type ProfileError = {
+    name?: string;
+    email?: string;
+}
