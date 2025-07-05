@@ -1,10 +1,12 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
+import { useAuth } from '@/context/AuthContext';
 
 export default function ProfileScreen() {
+    const { logout } = useAuth();
+
     return (
         <View>
-            <Text>Profile Screen</Text>
-            <Text>Profile details will be displayed here.</Text>
+            <Button onPress={logout} title='Se déconnecter'/>
         </View>
     );
 }

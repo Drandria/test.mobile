@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, ReactNode, useEffect } from 'react';
 import { User, AuthContextType } from '../types/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { mockUsers } from '../data/users';
@@ -8,9 +8,28 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() =>{
+        const loadUserFromStorage = async () => {
+            const storedUser = await AsyncStorage.getItem('user')
+            if (storedUser) {
+                setUser(JSON.parse(storedUser));
+                setToken('fake-token');
+            }
+            setIsLoading(false);
+        }
+
+        loadUserFromStorage();
+    }, []);
 
     const login = async (email: string, password: string): Promise<boolean> => {
-        const foundUser = mockUsers.find(
+        const storedUsers = await AsyncStorage.getItem('users');
+        const persistedUsers: User[] = storedUsers ? JSON.parse(storedUsers) : [];
+
+        const allUsers = [...mockUsers, ...persistedUsers];
+        
+        const foundUser = allUsers.find(
             u => u.email === email && u.password === password
         );
 
@@ -24,13 +43,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     const register = async (email: string, name: string, password: string): Promise<boolean> => {
+        const storedUsers = await AsyncStorage.getItem('users');
+        const persistedUsers: User[] = storedUsers ? JSON.parse(storedUsers) : [];
+
+        const allUsers = [...mockUsers, ...persistedUsers];
+        
+        if (allUsers.find(u => u.email === email)) {
+            return false;
+        }
+
         const newUser: User = {
             id: Math.random().toString(36).substring(7),
             email,
             name,
             password
         };
-        mockUsers.push(newUser);
+
+        const updatedUsers = [...persistedUsers, newUser];
+        await AsyncStorage.setItem('users', JSON.stringify(updatedUsers));
+
         setUser(newUser);
         setToken('fake-token');
         await AsyncStorage.setItem('user', JSON.stringify(newUser));
@@ -44,7 +75,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
     return (
         <AuthContext.Provider value={{ user, token, login, register, logout }}>
-            {children}
+            {!isLoading && children}
         </AuthContext.Provider>
     );
 };
