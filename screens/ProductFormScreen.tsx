@@ -1,14 +1,18 @@
-import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRoute } from '@react-navigation/native';
-import { useState } from 'react';
+import { useRoute, useNavigation, NavigationProp, RouteProp } from '@react-navigation/native';
+import { useState, useEffect } from 'react';
 import { Product } from '@/types/product';
-import { getProductById } from '@/services/product.service';
+import { getProductById, updateProduct, addProduct, deleteProduct } from '@/services/product.service';
+import { AppTabParamList } from '@/types/navigation';
+
 
 export default function ProductFormScreen() {
-    const route = useRoute();
+    const route = useRoute<RouteProp<AppTabParamList,"List">>();
+    const navigation = useNavigation<NavigationProp<AppTabParamList,"List">>();
     const params = route.params as { id?: string } | undefined;
     const id: string | undefined = params?.id;
+
     const emptyProduct: Product = {
         id: '',
         name: '',
@@ -19,9 +23,55 @@ export default function ProductFormScreen() {
         image: '',
         isActive: true,
         vendeurs: '',
-    }
-    const productFound = id ? getProductById(id) : null;
-    const [product, setProduct] = useState<Product>(productFound ?? emptyProduct);
+    };
+
+    const [product, setProduct] = useState<Product>(emptyProduct);
+
+    useEffect(() => {
+        if (id) {
+            getProductById(id).then((found) => {
+                if (found) setProduct(found);
+            });
+        }
+    }, [id]);
+
+    const handleSave = () => {
+        if (id) {
+            updateProduct(product);
+            Alert.alert("Succès", "Produit mis à jour !");
+        } else {
+            addProduct(product);
+            Alert.alert("Succès", "Produit ajouté !");
+        }
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'List', params: { refresh: true } }],
+        });
+    };
+
+    const handleDelete = () => {
+        Alert.alert(
+            "Confirmation",
+            "Supprimer ce produit ?",
+            [
+                { text: "Annuler", style: "cancel" },
+                {
+                    text: "Supprimer",
+                    style: "destructive",
+                    onPress: () => {
+                        if (id) {
+                            deleteProduct(id);
+                            Alert.alert("Supprimé", "Produit supprimé.");
+                            navigation.reset({
+                                index: 0,
+                                routes: [{ name: 'List' }],
+                            });
+                        }
+                    }
+                }
+            ]
+        );
+    };
 
     return (
         <SafeAreaView style={{ flex: 1 }} edges={['top']}>
@@ -44,7 +94,7 @@ export default function ProductFormScreen() {
                     placeholder="Prix"
                     value={product.price?.toString()}
                     keyboardType="numeric"
-                    onChangeText={(text) => setProduct({ ...product, price: parseFloat(text) })}
+                    onChangeText={(text) => setProduct({ ...product, price: parseFloat(text) || 0 })}
                 />
                 <TextInput
                     style={styles.input}
@@ -58,23 +108,21 @@ export default function ProductFormScreen() {
                     value={product.vendeurs ?? ''}
                     onChangeText={(text) => setProduct({ ...product, vendeurs: text })}
                 />
-                    {product.id ? (
+
+                <Button
+                    title={id ? "Mettre à jour le produit" : "Ajouter le produit"}
+                    onPress={handleSave}
+                />
+
+                {id && (
+                    <View style={{ marginTop: 12 }}>
                         <Button
-                            title="Mettre à jour le produit"
-                            onPress={() => {
-                                // Logic to update the product
-                                console.log('Produit mis à jour:', product);
-                            }}
+                            title="Supprimer le produit"
+                            color="red"
+                            onPress={handleDelete}
                         />
-                    ) : (
-                        <Button
-                            title="Ajouter le produit"
-                            onPress={() => {
-                                // Logic to add the new product
-                                console.log('Nouveau produit ajouté:', product);
-                            }}
-                        />
-                    )}
+                    </View>
+                )}
             </View>
         </SafeAreaView>
     );

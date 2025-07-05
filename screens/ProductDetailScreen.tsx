@@ -1,15 +1,26 @@
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, StyleSheet, Button } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRoute } from "@react-navigation/native";
 import { getProductById, deleteProduct } from "@/services/product.service";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { AppTabParamList } from "@/types/navigation";
+import { Product } from "@/types/product";
 
 export default function ProductDetailScreen() {
+	const [product, setProduct] = useState<Product | null>(null);
 	const route = useRoute();
 	const { id } = route.params as { id: string };
-	const product = getProductById(id);
 	const navigation = useNavigation<NavigationProp<AppTabParamList>>();
+
+	useEffect(() => {
+        if (id) {
+            getProductById(id).then((found) => {
+                console.log("Found product:", found);
+                if (found) setProduct(found);
+            });
+        }
+    }, [id]);
 
 	const handleDelete = () => {
 		deleteProduct(id);

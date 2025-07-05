@@ -1,5 +1,5 @@
 import React, { createContext, useState, ReactNode, useEffect } from 'react';
-import { User, AuthContextType } from '../types/auth';
+import { User, AuthContextType } from '@/types/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { mockUsers } from '../data/users';
 
@@ -34,9 +34,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         );
 
         if (foundUser) {
-            setUser(foundUser);
+            const { password: _, ...userWithoutPassword } = foundUser;
+
+            setUser(userWithoutPassword);
             setToken('fake-token');
-            await AsyncStorage.setItem('user', JSON.stringify(foundUser));
+            await AsyncStorage.setItem('user', JSON.stringify(userWithoutPassword));
             return true;
         }
         return false;
@@ -62,9 +64,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const updatedUsers = [...persistedUsers, newUser];
         await AsyncStorage.setItem('users', JSON.stringify(updatedUsers));
 
-        setUser(newUser);
+        const { password: _, ...userWithoutPassword } = newUser;
+
+        setUser(userWithoutPassword);
         setToken('fake-token');
-        await AsyncStorage.setItem('user', JSON.stringify(newUser));
+        await AsyncStorage.setItem('user', JSON.stringify(userWithoutPassword));
         return true;
     };
 
@@ -74,7 +78,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         await AsyncStorage.removeItem('user');
     };
     return (
-        <AuthContext.Provider value={{ user, token, login, register, logout }}>
+        <AuthContext.Provider value={{ user, token, login, register, logout, setUser }}>
             {!isLoading && children}
         </AuthContext.Provider>
     );

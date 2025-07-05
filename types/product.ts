@@ -5,8 +5,8 @@ export type Product = {
     price: number;
     stock: number;
     category: string;
-    vendeurs: string | null;
-    image: string | null;
+    vendeurs: string;
+    image: string;
     isActive: boolean;
 }
 

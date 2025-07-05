@@ -50,7 +50,7 @@
         "price": 1399.99,
         "stock": 20,
         "category": "Informatique",
-        "vendeurs": null,
+        "vendeurs": "TechHub",
         "image": null,
         "isActive": false
     },
@@ -72,8 +72,8 @@
         "price": 379.99,
         "stock": 10,
         "category": "Audio",
-        "vendeurs": null,
-        "image": null,
+        "vendeurs": "AudioExpert",
+        "image": "https://example.com/applewatch9.jpg",
         "isActive": false
     },
     {
@@ -94,8 +94,8 @@
         "price": 699.99,
         "stock": 22,
         "category": "Tablettes",
-        "vendeurs": null,
-        "image": null,
+        "vendeurs": "TechHub",
+        "image": "https://example.com/applewatch9.jpg",
         "isActive": false
     },
     {
@@ -105,8 +105,8 @@
         "price": 99.99,
         "stock": 60,
         "category": "Informatique",
-        "vendeurs": null,
-        "image": null,
+        "vendeurs": "TechHub",
+        "image": "https://example.com/applewatch9.jpg",
         "isActive": false
     }
 ]

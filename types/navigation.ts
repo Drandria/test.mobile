@@ -4,7 +4,7 @@ export type AuthStackParamList = {
 };
 
 export type AppTabParamList = {
-  List: undefined;
+  List: { refresh?: boolean } | undefined;
   Detail: { id : string };
   Form: { id?: string };
   Profile: undefined;

@@ -2,7 +2,7 @@ export type User = {
     id: string;
     email: string;
     name: string;
-    password: string;
+    password?: string;
 };
 
 export type AuthContextType = {
@@ -11,4 +11,5 @@ export type AuthContextType = {
     login: (email: string, password: string) => Promise<boolean>;
     register: (email: string, name: string, password: string) => Promise<boolean>;
     logout: () => void;
+    setUser: (user: User | null) => void;
 };

@@ -2,8 +2,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ProductListScreen from "@/screens/ProductListScreen";
 import ProductDetailScreen from "@/screens/ProductDetailScreen";
 import ProductFormScreen from "@/screens/ProductFormScreen";
+import { AppTabParamList } from "@/types/navigation";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<AppTabParamList>();
 
 export default function ProductStack() {
     return (
