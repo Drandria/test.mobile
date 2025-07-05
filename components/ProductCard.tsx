@@ -2,9 +2,12 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { Product } from "@/types/product";
 import { AppTabParamList } from "@/types/navigation";
+import Badge from "./Badge";
+import { useColors } from "@/hooks/useColors";
 
 export function ProductCard({ product }: { product: Product }) {
     const navigation = useNavigation<NavigationProp<AppTabParamList>>();
+    const colors = useColors();
 
     return (
         <TouchableOpacity 
@@ -17,11 +20,13 @@ export function ProductCard({ product }: { product: Product }) {
                 resizeMode="cover"
             />
             <View style={styles.info}>
-                <Text style={styles.title}>{ product.name }</Text>
-                <Text>{ product.description } </Text>
+                <View>
+                    <Text style={[ styles.title, { color: colors.text } ]}>{ product.name }</Text>
+                    <Text style={[{ color: colors.textSecondary }]}>{ product.description } </Text>
+                </View>
                 <View style={styles.details}>
                     <Text style={styles.price}>{ product.price } €</Text>
-                    <Text style={styles.category}>{ product.category }</Text>
+                    <Badge label={product.category}/>
                 </View>
             </View>
         </TouchableOpacity>
@@ -47,16 +52,16 @@ const styles = StyleSheet.create({
     },
     image: {
         width: "100%",
-        height: 200,
+        height: 400,
         borderTopLeftRadius: 8,
         borderTopRightRadius: 8,
     },
     info: {
         padding: 16,
-        gap: 8,
+        gap: 10,
     },
     title: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: "bold",
     },
     details: {
@@ -67,9 +72,5 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
         color: "#333",
-    },
-    category: {
-        fontSize: 14,
-        color: "#666",
-    },
+    }
 })

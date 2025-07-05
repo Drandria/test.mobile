@@ -6,6 +6,8 @@ import { AppTabParamList } from "@/types/navigation";
 
 const Stack = createNativeStackNavigator<AppTabParamList>();
 
+// Setting up the product stack navigation
+
 export default function ProductStack() {
     return (
     <Stack.Navigator initialRouteName="List" screenOptions={{ headerShown: false }}>

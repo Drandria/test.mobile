@@ -1,60 +1,29 @@
 import { View, StyleSheet, FlatList, Text } from "react-native";
-import { useEffect, useState, useCallback } from "react";
-import { useFocusEffect, useNavigation, useRoute, NavigationProp, RouteProp } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScreenTitle } from "@/components/ScreenTitle";
-import { getProducts } from "@/services/product.service";
 import { ProductCard } from "@/components/ProductCard";
 import { SearchBar } from "@/components/SearchBar";
-import { initProducts } from "@/utils/initProducts";
-import { Product } from "@/types/product";
-import { AppTabParamList } from "@/types/navigation";
+import { useColors } from "@/hooks/useColors";
+import { useProducts } from "@/context/ProductContext";
+
 
 export default function ProductListScreen() {
 	const [search, setSearch] = useState<string>("");
-	const [loading, setLoading] = useState<boolean>(false);
-	const [products, setProducts] = useState<Product[]>([]);
-	const navigation = useNavigation<NavigationProp<AppTabParamList,"List">>();
-	const route = useRoute<RouteProp<AppTabParamList,"List">>();
+	const { products, loading, setFilter } = useProducts();
+	const colors = useColors();
 
 	useEffect(() => {
-		initProducts();
-	},[]);
-
-
-	useEffect(() => {
-		const fetchProducts = async () => {
-			setLoading(true);
-			const result = await getProducts(search.trim() ? { search } : undefined);
-			setProducts(result);
-			setLoading(false);
-		};
-		fetchProducts();
+		setFilter({ search });
 	}, [search]);
 
-	useFocusEffect(
-        useCallback(() => {
-            const refresh = route.params?.refresh;
-
-            if (refresh) {
-                const load = async () => {
-                    const all = await getProducts();
-                    setProducts(all);
-                };
-                load();
-
-                navigation.setParams({ refresh: false });
-            }
-        }, [route.params])
-    );
-
 	return (
-		<SafeAreaView style={styles.container} edges={['top']}>
+		<SafeAreaView style={[styles.container, { backgroundColor: colors.primary }]} edges={['top']}>
 			<ScreenTitle title="Product List" />
 			<View style={styles.filter}>
 				<SearchBar value={search} onChange={setSearch}/>
 			</View>
-			<View style={styles.body}>
+			<View style={[styles.body, { backgroundColor: colors.background }]}>
 				<FlatList
 					data={products}
 					keyExtractor={(item) => item.id.toString()}

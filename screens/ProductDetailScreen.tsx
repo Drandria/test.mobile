@@ -16,7 +16,6 @@ export default function ProductDetailScreen() {
 	useEffect(() => {
         if (id) {
             getProductById(id).then((found) => {
-                console.log("Found product:", found);
                 if (found) setProduct(found);
             });
         }
