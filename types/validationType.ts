@@ -2,6 +2,7 @@ export type RegisterError = {
     email?: string;
     name?: string;
     password?: string;
+    register?: string;
 }
 
 export type LoginError = {

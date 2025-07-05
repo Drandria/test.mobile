@@ -1,9 +1,14 @@
-import { Text, View, TextInput, Button, StyleSheet } from "react-native";
+import { Text, StyleSheet, KeyboardAvoidingView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import { validateRegister } from "@/utils/validation";
 import { RegisterError } from "@/types/validationType";
+import Button from "@/components/Button";
+import Input from "@/components/Input";
+import Header from "@/components/Header";
+import { useColors } from "@/hooks/useColors";
 
 export default function RegisterScreen() {
 
@@ -13,6 +18,7 @@ export default function RegisterScreen() {
     const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState<RegisterError>({});
+    const colors = useColors();
 
     const handleRegister = async () => {
 
@@ -25,73 +31,64 @@ export default function RegisterScreen() {
         if (success) {
             return
         } else {
-            console.error("Registration failed");
+            setError({ register: "Cette adresse email est déjà utilisé" });
         }
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Inscription</Text>
-            <TextInput
-                placeholder="Email"
-                style={styles.input}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                value={email}
-                onChangeText={setEmail}
-            />
-
-            { error.email && <Text style={{ color: "red", marginBottom: 10 }}>{error.email}</Text> }
-            
-            <TextInput
-                placeholder="Nom"
-                style={styles.input}
-                value={name}
-                onChangeText={setName}
-            />
-
-            { error.name && <Text style={{ color: "red", marginBottom: 10 }}>{error.name}</Text> }
-
-            <TextInput
-                placeholder="Mot de passe"
-                style={styles.input}
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-            />
-
-            { error.password && <Text style={{ color: "red", marginBottom: 10 }}>{error.password}</Text> }
-
-            <Button title="S'inscrire" onPress={ handleRegister } />
-            <Text style={styles.link} onPress={() => { navigation.goBack() }}>
-                Déjà un compte ? Se connecter
-            </Text>
-        </View>
+        <SafeAreaView style={styles.backGround}>
+            <KeyboardAvoidingView style={styles.container} behavior="padding">
+                <Header>Inscription</Header>
+                <Input
+                    label="Email"
+                    returnKeyType="next"
+                    value={email}
+                    onChangeText={setEmail}
+                    error={!!error.email}
+                    errorText={error.email ?? undefined}
+                    autoCapitalize="none"
+                />
+                <Input
+                    label="Nom"
+                    returnKeyType="next"
+                    value={name}
+                    onChangeText={setName}
+                    error={!!error.name}
+                    errorText={error.name ?? undefined}
+                />
+                <Input
+                    label="Mot de passe"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                    error={!!error.password}
+                    errorText={error.password ?? undefined}
+                />
+                {error.register && <Text style={{ color: colors.error, textAlign: 'center' }}>{error.register}</Text>}
+                <Button mode="contained" onPress={handleRegister}>
+                    S'inscrire
+                </Button>
+                <Text style={styles.link} onPress={() => { navigation.goBack() }}>
+                    Déjà un compte ? Se connecter
+                </Text>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
+    backGround: {
+        flex: 1,
+        width: '100%',
+    },
     container: {
         flex: 1,
-        justifyContent: "flex-start",
-        paddingHorizontal: 20,
-        paddingTop: 50,
-        backgroundColor: "#fff",
-    },
-
-    title: {
-        fontSize: 24,
-        fontWeight: "bold",
-        marginBottom: 20,
-        textAlign: "center",
-    },
-    input: {
-        height: 40,
-        borderColor: "#ccc",
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 10,
-        marginBottom: 15,
+        padding: 20,
+        width: '100%',
+        maxWidth: 340,
+        alignSelf: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     link: {
         color: "#007BFF",

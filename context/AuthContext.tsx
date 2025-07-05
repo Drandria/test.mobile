@@ -2,6 +2,7 @@ import React, { createContext, useState, ReactNode, useEffect } from 'react';
 import { User, AuthContextType } from '@/types/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { mockUsers } from '../data/users';
+import { hashPassword, verifyPassword } from '@/utils/encrypt';
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -11,6 +12,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() =>{
+        // Load user from AsyncStorage when the app starts
         const loadUserFromStorage = async () => {
             const storedUser = await AsyncStorage.getItem('user')
             if (storedUser) {
@@ -23,15 +25,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         loadUserFromStorage();
     }, []);
 
+
+    // Chech if the user credentials are valid in mockUsers or persisted users
+    // If valid, set the user and token in the context
     const login = async (email: string, password: string): Promise<boolean> => {
         const storedUsers = await AsyncStorage.getItem('users');
         const persistedUsers: User[] = storedUsers ? JSON.parse(storedUsers) : [];
 
         const allUsers = [...mockUsers, ...persistedUsers];
         
-        const foundUser = allUsers.find(
-            u => u.email === email && u.password === password
-        );
+        let  foundUser: User | undefined;
+        for(const u of allUsers) {
+            if (u.email === email) {
+                const isValid = await verifyPassword(password, u.password!);
+                if (isValid) {
+                    foundUser = u;
+                    break
+                }
+            }
+        }
 
         if (foundUser) {
             const { password: _, ...userWithoutPassword } = foundUser;
@@ -44,6 +56,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         return false;
     };
 
+    // Register a new user
+    // If the email is already used, return false
     const register = async (email: string, name: string, password: string): Promise<boolean> => {
         const storedUsers = await AsyncStorage.getItem('users');
         const persistedUsers: User[] = storedUsers ? JSON.parse(storedUsers) : [];
@@ -54,11 +68,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             return false;
         }
 
+        const hashedPassword = await hashPassword(password);
+        console.log("Hashed Password:", hashedPassword);
+
         const newUser: User = {
             id: Math.random().toString(36).substring(7),
             email,
             name,
-            password
+            password: hashedPassword
         };
 
         const updatedUsers = [...persistedUsers, newUser];
